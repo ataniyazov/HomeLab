@@ -1,0 +1,30 @@
+---
+- name: Reconnaissance: IP, DNS, and Open Ports
+  hosts: all
+  become: yes  # To escalate privileges using sudo
+
+  tasks:
+    - name: Gather IP address information
+      debug:
+        msg: "IP Address: {{ ansible_default_ipv4.address }}"
+      when: ansible_default_ipv4
+
+    - name: Gather DNS information
+      shell: "nslookup google.com | grep 'Address:'"
+      register: dns_info
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+    - name: Display DNS information
+      debug:
+        msg: "{{ dns_info.stdout_lines }}"
+      when: dns_info is defined
+
+    - name: Check open ports using netstat
+      command: "netstat -tuln"
+      register: open_ports
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+    - name: Display open ports information
+      debug:
+        msg: "{{ open_ports.stdout_lines }}"
+      when: open_ports is defined

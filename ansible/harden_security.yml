@@ -1,0 +1,74 @@
+---
+- name: Harden security on Ubuntu and Kali Linux
+  hosts: all
+  become: yes  # To escalate privileges using sudo
+
+  tasks:
+    - name: Ensure firewall is active and enabled (ufw for Ubuntu)
+      ufw:
+        state: enabled
+      when: ansible_os_family == 'Debian'
+
+    - name: Ensure firewalld is active and enabled (for Kali Linux)
+      firewalld:
+        state: enabled
+      when: ansible_os_family == 'RedHat'
+
+    - name: Allow SSH through firewall
+      ufw:
+        rule: allow
+        name: OpenSSH
+        state: enabled
+      when: ansible_os_family == 'Debian'
+
+    - name: Allow SSH through firewalld
+      firewalld:
+        service: ssh
+        state: enabled
+      when: ansible_os_family == 'RedHat'
+
+    - name: Disable root SSH access
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+      notify:
+        - restart ssh
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+    - name: Ensure password authentication is disabled for SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+        state: present
+      notify:
+        - restart ssh
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+    - name: Ensure SSH protocol 2 is enabled
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^Protocol'
+        line: 'Protocol 2'
+        state: present
+      notify:
+        - restart ssh
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+    - name: Ensure only approved users can access SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^AllowUsers'
+        line: 'AllowUsers ansible'  # Replace 'ansible' with your user(s)
+        state: present
+      notify:
+        - restart ssh
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+  handlers:
+    - name: restart ssh
+      service:
+        name: sshd
+        state: restarted

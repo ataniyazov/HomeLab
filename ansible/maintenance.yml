@@ -1,0 +1,27 @@
+---
+- name: Perform maintenance tasks on Ubuntu and Kali Linux
+  hosts: all
+  become: yes  # To escalate privileges using sudo
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+      when: ansible_os_family == 'Debian'
+
+    - name: Reboot if required
+      reboot:
+      when: ansible_reboot_pending
+
+    # Add more tasks as needed for additional maintenance
+
+  handlers:
+    - name: Reboot the system
+      reboot:
+      when: ansible_os_family == 'Debian' and ansible_reboot_pending
+

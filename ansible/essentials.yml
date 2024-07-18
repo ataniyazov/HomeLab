@@ -1,0 +1,22 @@
+---
+- name: Install Essential Software on Ubuntu
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure software-properties-common is installed
+      apt:
+        name: software-properties-common
+        state: present
+
+#    - name: Add PPA for latest Git
+#      apt_repository:
+#        repo: ppa:git-core/ppa
+
+    - name: Install packages
+      apt:
+        name:
+          - git
+          - curl
+          - vim
+          - htop
+        state: present
