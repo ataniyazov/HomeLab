@@ -2,8 +2,6 @@ WireGuard_Installation
 
 https://browserleaks.com/ip - test ip and dns leak
 
-Sure, here is a comprehensive guide for installing WireGuard, configuring a server and two clients, setting up the firewall, enabling IPv4 and IPv6 tunneling, hiding IPv6, and masking personal IPs:
-
 ### Installation
 
 #### On Debian/Ubuntu
