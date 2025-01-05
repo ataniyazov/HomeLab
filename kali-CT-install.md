@@ -2,19 +2,27 @@
 
 ## Install Base Packages
 ```bash
-apt-get -y install wget inetutils-tools iputils-ping ssh man nano
+apt -y install \
+   wget \
+   inetutils-tools \
+   iputils-ping \
+   ssh \
+   man \
+   nano
 ```  
 
 ## Install ZSH Kali Theme  
 ```bash
-sudo apt-get -y install kali-defaults zsh zsh-syntax-highlighting zsh-autosuggestions
+sudo apt -y install \
+   kali-defaults \
+   zsh \
+   zsh-syntax-highlighting \
+   zsh-autosuggestions
 ```  
 
 ## Create a Traditional User:Group (kali:kali)  
 ```bash
-adduser kali
-usermod -aG sudo kali
-id kali
+adduser kali && usermod -aG sudo kali && id kali
 ```  
 
 ## Enable SSH Server and Login Using "kali" User (via Putty)  
@@ -32,10 +40,12 @@ id kali
 
 3. Perform additional updates and installation:  
    ```bash
-   sudo apt-get update && sudo apt-get -y dist-upgrade
+   sudo apt update && sudo apt -y dist-upgrade
+   ```
+   ```bash
    sudo reboot now  # optional
    sudo apt-cache search kali-linux #sudo kali-tweaks
-   sudo apt-get -y install kali-linux-default
+   sudo apt -y install kali-linux-default
    ``` 
 
 ## Setting up RDP with Kali Base XFCE  
